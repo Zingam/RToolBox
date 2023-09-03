@@ -1,0 +1,88 @@
+{
+  "version": 5,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 27,
+    "patch": 0
+  },
+  "include": [],
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default Config",
+      "hidden": true,
+      "binaryDir": "${sourceParentDir}/build/${presetName}",
+      "cacheVariables": {
+        "VCPKG_INSTALL_OPTIONS": "--no-print-usage"
+      },
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "environment": {}
+    },
+    {
+      "name": "default.ninja-multi",
+      "inherits": "default",
+      "displayName": "Ninja Multi-Config",
+      "description": "Default build using Ninja Multi-Config generator",
+      "generator": "Ninja Multi-Config",
+      "condition": {
+        "type": "notEquals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "default.ninja-multi.msvc",
+      "inherits": "default",
+      "displayName": "Ninja Multi-Config (MSVC)",
+      "description": "Default build using Ninja Multi-Config generator",
+      "generator": "Ninja Multi-Config",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "toolset": {
+        "value": "v143,host=x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default.ninja-multi.Debug",
+      "description": "Ninja-Multiconfig Debug",
+      "displayName": "Debug",
+      "configurePreset": "default.ninja-multi",
+      "configuration": "Debug"
+    },
+    {
+      "name": "default.ninja-multi.Release",
+      "description": "Ninja-Multiconfig Release",
+      "displayName": "Release",
+      "configurePreset": "default.ninja-multi",
+      "configuration": "Release"
+    },
+    {
+      "name": "default.ninja-multi.msvc.Debug",
+      "description": "Ninja-Multiconfig Debug (MSVC)",
+      "displayName": "Debug",
+      "configurePreset": "default.ninja-multi.msvc",
+      "configuration": "Debug"
+    },
+    {
+      "name": "default.ninja-multi.msvc.Release",
+      "description": "Ninja-Multiconfig Release (MSVC)",
+      "displayName": "Release",
+      "configurePreset": "default.ninja-multi.msvc",
+      "configuration": "Release"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+################################################################################
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+################################################################################
+
+# Available default styles:
+#   LLVM, Google, Chromium, Mozilla, WebKit, Microsoft, GNU
+BasedOnStyle: Mozilla
+# Always break after an open bracket, if the parameters don't fit on a single
+# line.
+AlignAfterOpenBracket: AlwaysBreak
+# If true, clang-format adds missing namespace end comments for namespaces and
+# fixes invalid existing ones.
+FixNamespaceComments: true
+# Preprocessor directive indenting style to use
+IndentPPDirectives: AfterHash
+# The maximal number of unwrapped lines that a short namespace spans.
+ShortNamespaceLines: 0

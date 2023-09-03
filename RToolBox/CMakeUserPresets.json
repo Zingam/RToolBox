@@ -1,0 +1,27 @@
+{
+  "version": 5,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 27,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "clang",
+      "inherits": "ninja-multi",
+      "displayName": "Clang Build",
+      "description": "Default build using Ninja Multi-Config generator",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": {
+          "type": "STRING",
+          "value": "env{LLVM_ROOT}/bin/clang-cl"
+        },
+        "CMAKE_CXX_COMPILER": {
+          "type": "STRING",
+          "value": "env{LLVM_ROOT}/bin/clang-cl"
+        }
+      }
+    }
+  ],
+  "buildPresets": []
+}
