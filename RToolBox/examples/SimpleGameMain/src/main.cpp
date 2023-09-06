@@ -1,6 +1,7 @@
 #include "Resources/Windows/resource.h"
 
 #include <cstdlib>
+#include <string>
 
 import rmm.RToolBox;
 
@@ -8,7 +9,7 @@ namespace {
 
 namespace rt = ::rmm::rtoolbox;
 
-}
+} // namespace
 
 int
 rt_main(int argc, char** argv)
