@@ -13,11 +13,6 @@ export namespace rmm::rtoolbox {
 class Application
 {
 public:
-  /**
-   * @brief Print application info.
-   *
-   */
-  void print();
 };
 
 } // namespace rmm::rtoolbox

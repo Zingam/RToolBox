@@ -82,7 +82,6 @@ Window::Window_Implementation::Show() const
 void
 Window::Window_Implementation::Run() const
 {
-  //---- Message Loop ----------//
   MSG msg;
   auto isRunning{ true };
   while (isRunning) {
@@ -117,7 +116,7 @@ Window::Window_Implementation::SetIcon(Window::ResourceID icon) const noexcept
 HWND
 Window::Window_Implementation::Initialize() noexcept
 {
-  if (NULL != hwnd) {
+  if (nullptr != hwnd) {
     return hwnd;
   }
 
@@ -133,7 +132,6 @@ Window::Window_Implementation::Initialize() noexcept
 
   wc.lpfnWndProc = &Window_Implementation::WindowProcedure;
   wc.hInstance = ::GetModuleHandle(nullptr);
-  // wc.hIcon = LoadIcon(wc.hInstance, MAKEINTRESOURCE(IDI_APPICON));
   wc.lpszClassName = titleStr.c_str();
 
   ::RegisterClass(&wc);
@@ -181,19 +179,6 @@ Window::Window_Implementation::WindowProcedure(
         ::DestroyWindow(hwnd);
         break;
       }
-      ::MessageBox(
-        NULL,
-        L"Button pressed",
-        L"Button pressed!",
-        // `MB_DEFAULT_DESKTOP_ONLY` is needed if the program handles
-        // `WM_PAINT`.
-        MB_ICONEXCLAMATION | MB_OK | MB_DEFAULT_DESKTOP_ONLY);
-      std::println("Button pressed: {}", wParam);
-    case WM_MOVE:
-      break;
-    case WM_PAINT: {
-      // In case of `WM_PAINT` add `MB_DEFAULT_DESKTOP_ONLY` to `MessageBox`
-    } break;
     default:
       return ::DefWindowProc(hwnd, msg, wParam, lParam);
   }
