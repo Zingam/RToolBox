@@ -5,7 +5,6 @@ module;
 #include <string>
 
 export module rmm.RToolBox:Geometry.Point;
-// export module rmm.RToolBox.Geometry:Point;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Public interface
