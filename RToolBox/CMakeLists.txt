@@ -36,7 +36,6 @@ target_sources("${PROJECT_NAME}"
       "modules/Geometry/Line.cppm"
       "modules/Geometry/Point.cppm"
       "modules/Renderer/Renderer.cppm"
-      $<$<PLATFORM_ID:Windows>:modules/System/OutputDebugStringBuf.cppm>
       "modules/System/Window.cppm"
       "modules/RToolBox.cppm"
   PRIVATE
