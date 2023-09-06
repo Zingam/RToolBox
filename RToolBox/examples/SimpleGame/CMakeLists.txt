@@ -1,8 +1,5 @@
-add_executable("SimpleGame" WIN32)
-set_property(TARGET "SimpleGame"
-  PROPERTY
-    $<$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:MSVC>>:WIN32_EXECUTABLE TRUE>
-)
+add_executable("SimpleGame")
+set_executable_type("SimpleGame")
 target_include_directories("SimpleGame"
   PRIVATE
     "../"

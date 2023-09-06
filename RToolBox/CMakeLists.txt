@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.27.0)
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/cmake")
 
+include("ExecutableTargetType")
 include("CMakeCXXModules")
 
 project("RToolBox")
