@@ -1,9 +1,9 @@
 project("Vulkan")
 
-# Find Vulkan SDK
+# Find Vulkan SDK.
 find_package("Vulkan" REQUIRED)
 
-# Set up Vulkan C++ module
+# Set up Vulkan C++ module.
 add_library("${PROJECT_NAME}")
 add_library("vulkan::cppm" ALIAS "${PROJECT_NAME}")
 

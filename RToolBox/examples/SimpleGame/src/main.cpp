@@ -1,4 +1,4 @@
-#include "../../Resources/Windows/resource.h"
+#include "Resources/Windows/resource.h"
 
 import rmm.RToolBox;
 

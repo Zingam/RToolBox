@@ -1,6 +1,5 @@
 module;
 
-#include <print>
 #include <string>
 
 export module rmm.RToolBox:Renderer;
@@ -45,14 +44,6 @@ MakeRenderer(
   Application&& application,
   Engine&& engine = { std::string{ "RToolBox" }, 1 })
 {
-  // Initialize the vk::ApplicationInfo structure
-  // vk::ApplicationInfo applicationInfo{};
-  // applicationInfo.pApplicationName = application.app_name.data();
-  // applicationInfo.applicationVersion = application.version,
-  // applicationInfo.pEngineName = engine.name.data(),
-  // applicationInfo.engineVersion = engine.version,
-  // applicationInfo.apiVersion = vk::ApiVersion11;
-
   const vk::ApplicationInfo applicationInfo{
     .pApplicationName = application.app_name.c_str(),
     .applicationVersion = application.version,
@@ -72,12 +63,6 @@ MakeRenderer(
     &instanceExtensionPropertiesCount,
     instanceExtensionProperties.data());
 
-  std::println(
-    "Vulkan instance extensions: {}", instanceExtensionPropertiesCount);
-  for (const auto& [extensionName, specVersion] : instanceExtensionProperties) {
-    std::println("  {}, spec ver.: {}", extensionName.data(), specVersion);
-  }
-
   // Initialize the vk::InstanceCreateInfo
   vk::InstanceCreateInfo instanceCreateInfo{};
   instanceCreateInfo.pNext = nullptr;
@@ -87,8 +72,6 @@ MakeRenderer(
   instanceCreateInfo.ppEnabledLayerNames = nullptr;
   instanceCreateInfo.enabledExtensionCount = 0;
   instanceCreateInfo.ppEnabledExtensionNames = nullptr;
-
-  std::println("Creating a Vulkan instance!");
 
   const vk::Instance instance = vk::createInstance(instanceCreateInfo);
 

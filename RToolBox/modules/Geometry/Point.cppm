@@ -18,24 +18,13 @@ struct Point
   std::int64_t y;
 };
 
-Point
-operator+(const Point& lhs, const Point& rhs) noexcept;
-
-}
+} // namespace rmm::rtoolbox
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implementation
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace rmm::rtoolbox {
-
-Point
-operator+(const Point& lhs, const Point& rhs) noexcept
-{
-  Point point{ .x = lhs.x + rhs.y, .y = lhs.y + rhs.y };
-
-  return point;
-}
 
 }
 
@@ -69,4 +58,4 @@ struct formatter<::rmm::rtoolbox::Point, CharT>
   }
 };
 
-}
+} // namespace std

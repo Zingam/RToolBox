@@ -23,26 +23,13 @@ struct Line
   Point p2;
 };
 
-Line
-operator+(const Line& lhs, const Line& rhs) noexcept;
-
-}
+} // namespace rmm::rtoolbox
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implementation
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace rmm::rtoolbox {
-
-Line
-operator+(const Line& lhs, const Line& rhs) noexcept
-{
-  Point p1 = lhs.p1 + rhs.p1;
-  Point p2 = rhs.p2 + rhs.p2;
-  Line point{ p1, p2 };
-
-  return point;
-}
 
 }
 
@@ -76,4 +63,4 @@ struct formatter<::rmm::rtoolbox::Line, CharT>
   }
 };
 
-}
+} // namespace std

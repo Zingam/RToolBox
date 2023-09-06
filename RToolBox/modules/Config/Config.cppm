@@ -35,7 +35,9 @@ GetVersion();
 namespace rmm::rtoolbox {
 
 namespace {
+
 using namespace std::string_literals;
+
 } // namespace
 
 constexpr std::string

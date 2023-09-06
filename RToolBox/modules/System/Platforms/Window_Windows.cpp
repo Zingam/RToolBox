@@ -7,9 +7,6 @@ module;
 #include <print>
 #include <string>
 
-// Should match the icon number defined in `resource.h`.
-#define IDI_APPICON 101
-
 module rmm.RToolBox;
 
 namespace rmm::rtoolbox {
@@ -121,6 +118,7 @@ Window::Window_Implementation::Initialize() noexcept
   }
 
   // Register the window class.
+
   WNDCLASS wc = {};
 
   const auto utf8_to_wstring = [](const std::string& str) {
@@ -143,13 +141,11 @@ Window::Window_Implementation::Initialize() noexcept
     titleStr.c_str(),    // Window class
     titleStr.c_str(),    // Window text
     WS_OVERLAPPEDWINDOW, // Window style
-
     // Size and position
     CW_USEDEFAULT,
     CW_USEDEFAULT,
     CW_USEDEFAULT,
     CW_USEDEFAULT,
-
     NULL,         // Parent window
     NULL,         // Menu
     wc.hInstance, // Instance handle
