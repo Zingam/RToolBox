@@ -1,6 +1,6 @@
 extern "C++"
 {
-  int rt_main(int argc, char** argv);
+  int rt_main(int argc, char** argv, void* data);
 }
 
 #if _WINDOWS

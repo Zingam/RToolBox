@@ -8,7 +8,7 @@
   "configurePresets": [
     {
       "name": "clang",
-      "inherits": "ninja-multi",
+      "inherits": "default.ninja-multi",
       "displayName": "Clang Build",
       "description": "Default build using Ninja Multi-Config generator",
       "cacheVariables": {

@@ -19,6 +19,18 @@
       "environment": {}
     },
     {
+      "name": "default.msbuild.msvc",
+      "inherits": "default",
+      "displayName": "MSBuild (MSVC)",
+      "description": "Default build using MSBuild",
+      "generator": "Visual Studio 17 2022",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
       "name": "default.ninja.msvc",
       "inherits": "default",
       "displayName": "Ninja (MSVC)",

@@ -1,7 +1,7 @@
 namespace rmm::rtoolbox {
 
-Window::Window(Window::Description&& description)
-  : oPtr{ std::make_unique<Window_Implementation>(std::move(description)) }
+Window::Window(Window::Description&& description, void* data)
+  : oPtr{ std::make_unique<Implementation>(std::move(description), data) }
 {
 }
 
@@ -19,7 +19,8 @@ Window::Show() const
   oPtr->Show();
 }
 
-void Window::Run() const
+void
+Window::Run() const
 {
   oPtr->Run();
 }
@@ -30,7 +31,8 @@ Window::GetHandle() const noexcept
   return oPtr->GetHandle();
 }
 
-void Window::SetIcon(ResourceID icon) const noexcept
+void
+Window::SetIcon(ResourceID icon) const noexcept
 {
   oPtr->SetIcon(icon);
 }

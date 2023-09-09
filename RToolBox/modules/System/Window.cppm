@@ -27,7 +27,7 @@ public:
   using ResourceID = unsigned int;
 
 public:
-  Window(Description&& description);
+  Window(Description&& description, void* data = nullptr);
 
   ~Window();
 
@@ -41,10 +41,10 @@ public:
   void SetIcon(ResourceID icon) const noexcept;
 
 private:
-  class Window_Implementation;
+  class Implementation;
 
 private:
-  std::unique_ptr<Window_Implementation> oPtr;
+  std::unique_ptr<Implementation> oPtr;
 };
 
 } // namespace rmm::rtoolbox

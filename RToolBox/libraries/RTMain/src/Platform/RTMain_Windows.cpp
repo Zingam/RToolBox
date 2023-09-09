@@ -4,6 +4,7 @@
 #include <codecvt>
 #include <cstdlib>
 #include <string>
+#include <tuple>
 
 int WINAPI
 wWinMain(
@@ -30,5 +31,7 @@ wWinMain(
   auto* argvCStr = const_cast<char*>(argvStr.c_str());
   char** argv = &argvCStr;
 
-  return rt_main(nArgc, argv);
+  std::tuple<HINSTANCE, WORD> startupParams{ hInstance, nCmdShow };
+
+  return rt_main(nArgc, argv, reinterpret_cast<void*>(&startupParams));
 }

@@ -4,6 +4,8 @@
 #include <Windows.h>
 #endif
 
+#include <tuple>
+
 import rmm.RToolBox;
 
 namespace {
@@ -24,7 +26,8 @@ int
 main(int argc, char** argv)
 #endif
 {
-  rt::Window window{ rt::Window::Description{ "SimpleGame", 0, 0, 100, 100 } };
+  std::tuple<HINSTANCE, WORD> startupParams{hInstance, nCmdShow};
+  rt::Window window{ rt::Window::Description{ "SimpleGame", 0, 0, 100, 100 }, reinterpret_cast<void*>(&startupParams)};
   const auto* hwnd = window.GetHandle();
   window.SetIcon(IDI_APPICON);
   window.Show();

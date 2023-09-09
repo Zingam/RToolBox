@@ -2,21 +2,21 @@ module;
 
 #include <Windows.h>
 
+#include <cassert>
 #include <codecvt>
 #include <memory>
-#include <print>
 #include <string>
 
 module rmm.RToolBox;
 
 namespace rmm::rtoolbox {
 
-class Window::Window_Implementation
+class Window::Implementation
 {
 public:
-  Window_Implementation(Window::Description&& description);
+  Implementation(Window::Description&& description, void* data);
 
-  ~Window_Implementation();
+  ~Implementation();
 
 public:
   void Hide() const;
@@ -36,13 +36,22 @@ private:
 
 private:
   HWND hwnd{ NULL };
+  HINSTANCE hInstance{};
+  WORD nCmdShow{};
   Window::Description description;
 };
 
-Window::Window_Implementation::Window_Implementation(
-  Window::Description&& description)
+Window::Implementation::Implementation(
+  Window::Description&& description,
+  void* data)
   : description{ std::move(description) }
 {
+  assert(nullptr != data && "'WinMain()' startup parameters cannot be empty!");
+
+  auto* startupParams = reinterpret_cast<std::tuple<HINSTANCE, WORD>*>(data);
+  hInstance = std::get<0>(*startupParams);
+  nCmdShow = std::get<1>(*startupParams);
+
   if (NULL == Initialize()) {
     ::MessageBox(
       NULL,
@@ -52,7 +61,7 @@ Window::Window_Implementation::Window_Implementation(
   }
 }
 
-Window::Window_Implementation::~Window_Implementation()
+Window::Implementation::~Implementation()
 {
   if (NULL != hwnd) {
     ::DestroyWindow(hwnd);
@@ -60,24 +69,20 @@ Window::Window_Implementation::~Window_Implementation()
 }
 
 void
-Window::Window_Implementation::Hide() const
+Window::Implementation::Hide() const
 {
   ::ShowWindow(hwnd, SW_HIDE);
 }
 
 void
-Window::Window_Implementation::Show() const
+Window::Implementation::Show() const
 {
-  ::STARTUPINFO si;
-  ::GetStartupInfo(&si);
-  int nCmdShow = si.wShowWindow;
-
   ::ShowWindow(hwnd, nCmdShow);
   ::UpdateWindow(hwnd);
 }
 
 void
-Window::Window_Implementation::Run() const
+Window::Implementation::Run() const
 {
   MSG msg;
   auto isRunning{ true };
@@ -96,13 +101,13 @@ Window::Window_Implementation::Run() const
 }
 
 void*
-Window::Window_Implementation::GetHandle() const noexcept
+Window::Implementation::GetHandle() const noexcept
 {
   return hwnd;
 }
 
 void
-Window::Window_Implementation::SetIcon(Window::ResourceID icon) const noexcept
+Window::Implementation::SetIcon(Window::ResourceID icon) const noexcept
 {
   const HMODULE hInstance = ::GetModuleHandle(nullptr);
   const HICON hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(icon));
@@ -111,15 +116,13 @@ Window::Window_Implementation::SetIcon(Window::ResourceID icon) const noexcept
 }
 
 HWND
-Window::Window_Implementation::Initialize() noexcept
+Window::Implementation::Initialize() noexcept
 {
   if (nullptr != hwnd) {
     return hwnd;
   }
 
   // Register the window class.
-
-  WNDCLASS wc = {};
 
   const auto utf8_to_wstring = [](const std::string& str) {
     std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
@@ -128,33 +131,42 @@ Window::Window_Implementation::Initialize() noexcept
 
   auto titleStr = utf8_to_wstring(description.title);
 
-  wc.lpfnWndProc = &Window_Implementation::WindowProcedure;
-  wc.hInstance = ::GetModuleHandle(nullptr);
-  wc.lpszClassName = titleStr.c_str();
+  WNDCLASSEXW wcex{ .cbSize = sizeof(WNDCLASSEXW),
+                    .style = CS_HREDRAW | CS_VREDRAW,
+                    .lpfnWndProc = &Implementation::WindowProcedure,
+                    .cbClsExtra = 0,
+                    .cbWndExtra = 0,
+                    .hInstance = ::GetModuleHandle(nullptr),
+                    .hIcon = nullptr,
+                    .hCursor = LoadCursor(nullptr, IDC_CROSS),
+                    .hbrBackground = (HBRUSH)(COLOR_WINDOW + 1),
+                    .lpszMenuName = nullptr,
+                    .lpszClassName = titleStr.c_str(),
+                    .hIconSm = nullptr };
 
-  ::RegisterClass(&wc);
+  ::RegisterClassEx(&wcex);
 
   // Create the window.
 
-  hwnd = ::CreateWindowEx(
-    0,                   // Optional window styles
-    titleStr.c_str(),    // Window class
-    titleStr.c_str(),    // Window text
-    WS_OVERLAPPEDWINDOW, // Window style
-    // Size and position
+  hwnd = CreateWindowEx(
+    0,
+    titleStr.c_str(),
+    titleStr.c_str(),
+    WS_OVERLAPPEDWINDOW,
     CW_USEDEFAULT,
+    0,
     CW_USEDEFAULT,
-    CW_USEDEFAULT,
-    CW_USEDEFAULT,
-    NULL,         // Parent window
-    NULL,         // Menu
-    wc.hInstance, // Instance handle
-    NULL          // Additional application data
-  );
+    0,
+    nullptr,
+    nullptr,
+    ::GetModuleHandle(nullptr),
+    nullptr);
+
+  return hwnd;
 }
 
 LRESULT
-Window::Window_Implementation::WindowProcedure(
+Window::Implementation::WindowProcedure(
   HWND hwnd,
   UINT msg,
   WPARAM wParam,

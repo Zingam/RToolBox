@@ -49,14 +49,14 @@ target_compile_definitions ("${PROJECT_NAME}-base"
     $<$<PLATFORM_ID:Windows>:NOATOM>
     # *  NOCLIPBOARD       - Clipboard routines
     $<$<PLATFORM_ID:Windows>:NOCLIPBOARD>
-    # *  NOCOLOR           - Screen colors
-    $<$<PLATFORM_ID:Windows>:NOCOLOR>
+    # # *  NOCOLOR           - Screen colors
+    # $<$<PLATFORM_ID:Windows>:NOCOLOR>
     # *  NOCTLMGR          - Control and Dialog routines
     $<$<PLATFORM_ID:Windows>:NOCTLMGR>
     # *  NODRAWTEXT        - DrawText() and DT_*
     $<$<PLATFORM_ID:Windows>:NODRAWTEXT>
-    # *  NOGDI             - All GDI defines and routines
-    $<$<PLATFORM_ID:Windows>:NOGDI>
+    # # *  NOGDI             - All GDI defines and routines
+    # $<$<PLATFORM_ID:Windows>:NOGDI>
     # *  NOKERNEL          - All KERNEL defines and routines
     $<$<PLATFORM_ID:Windows>:NOKERNEL>
     # # *  NOUSER            - All USER defines and routines

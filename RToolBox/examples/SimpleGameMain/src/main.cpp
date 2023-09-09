@@ -12,9 +12,10 @@ namespace rt = ::rmm::rtoolbox;
 } // namespace
 
 int
-rt_main(int argc, char** argv)
+rt_main(int argc, char** argv, void* data)
 {
-  rt::Window window{ rt::Window::Description{ "SimpleGame", 0, 0, 100, 100 } };
+  rt::Window window{ rt::Window::Description{ "SimpleGame", 0, 0, 100, 100 },
+                     data };
   const auto* hwnd = window.GetHandle();
   window.SetIcon(IDI_APPICON);
   window.Show();
