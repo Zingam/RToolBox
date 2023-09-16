@@ -8,7 +8,12 @@ BasedOnStyle: Mozilla
 # Always break after an open bracket, if the parameters don't fit on a single
 # line.
 AlignAfterOpenBracket: AlwaysBreak
-# If true, clang-format adds missing namespace end comments for namespaces and
+# If a function call or braced initializer list doesn’t fit on a line, allow
+# putting all arguments onto the next line, even if 'BinPackArguments' is false.
+AllowAllArgumentsOnNextLine: true
+#  Always break before braces.
+BreakBeforeBraces: Allman
+# # If true, clang-format adds missing namespace end comments for namespaces and
 # fixes invalid existing ones.
 FixNamespaceComments: true
 # Preprocessor directive indenting style to use
