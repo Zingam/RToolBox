@@ -8,7 +8,7 @@ module;
 
 module rmm.rtoolbox.Vulkan;
 
-namespace rmm::rtoolbox::vk
+namespace rmm::vk
 {
 
 VkResult
@@ -28,4 +28,4 @@ Initialize()
   return VK_SUCCESS;
 }
 
-} // namespace rmm::rtoolbox::vk
+} // namespace rmm::vk

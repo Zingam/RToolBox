@@ -31,16 +31,30 @@ MakeRenderer(Application&& application, Engine&& engine);
 namespace rmm::rtoolbox::renderer
 {
 
+namespace
+{
+
+namespace rvk = ::rmm::vk;
+
+} // namespace
+
+struct Version
+{
+  std::uint32_t major;
+  std::uint32_t minor;
+  std::uint32_t patch;
+};
+
 struct Application
 {
-  const std::string app_name;
-  const std::uint32_t version;
+  const std::string name;
+  const Version version;
 };
 
 struct Engine
 {
   const std::string name;
-  const std::uint32_t version;
+  const Version version;
 };
 
 void
@@ -48,23 +62,15 @@ MakeRenderer(
   Application&& application,
   Engine&& engine = { std::string{ "RToolBox" }, 1 })
 {
-  namespace rvk = ::rmm::rtoolbox::vk;
-  auto result = rvk::Initialize();
-
-  rvk::ApplicationInfo applicationInfo{
-    .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-    .pApplicationName = "Hello Triangle",
-    .applicationVersion = rvk::MakeVersion(1, 0, 0),
-    .pEngineName = "No Engine",
-    .engineVersion = rvk::MakeVersion(1, 0, 0),
-    .apiVersion = rvk::ApiVersion11()
-  };
-
-  rvk::InstanceCreateInfo createInfo{ .sType =
-                                        VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-                                      .pApplicationInfo = &applicationInfo };
-
-  auto instanceExp = rvk::CreateInstance(&createInfo, nullptr);
+  auto instanceExp = rvk::CreateInstance(
+    { application.name,
+      rvk::MakeVersion(
+        application.version.major,
+        application.version.minor,
+        application.version.patch) },
+    { engine.name,
+      rvk::MakeVersion(
+        engine.version.major, engine.version.minor, engine.version.patch) });
   if (instanceExp.has_value())
   {
     // std::print("has instance {}", *instanceExp);

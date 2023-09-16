@@ -3,12 +3,31 @@ module;
 #include <vulkan/vulkan.h>
 
 #include <expected>
+#include <string>
 #include <vector>
 
 export module rmm.rtoolbox.Vulkan;
 
-export namespace rmm::rtoolbox::vk
+////////////////////////////////////////////////////////////////////////////////
+// Public interface
+////////////////////////////////////////////////////////////////////////////////
+
+export namespace rmm::vk
 {
+
+struct Application
+{
+  const std::string name;
+  const std::uint32_t version;
+};
+
+struct Engine
+{
+  const std::string name;
+  const std::uint32_t version;
+};
+
+// Vulkan types
 
 using Result = VkResult;
 using Instance = VkInstance;
@@ -18,11 +37,7 @@ using ApplicationInfo = VkApplicationInfo;
 using ExtensionProperties = VkExtensionProperties;
 using InstanceCreateInfo = VkInstanceCreateInfo;
 
-[[nodiscard]] Result
-Initialize();
-
-[[nodiscard]] Result
-Initialize(Instance instance);
+// Vulkan helper functions
 
 [[nodiscard]] constexpr std::uint32_t
 ApiVersion10() noexcept;
@@ -36,9 +51,12 @@ MakeVersion(
   std::uint32_t minor,
   std::uint32_t patch) noexcept;
 
+// Vulkan functions
+
 [[nodiscard]] std::expected<Instance, Result>
 CreateInstance(
-  const InstanceCreateInfo* createInfo,
+  Application application,
+  Engine engine,
   const AllocationCallbacks* allocator = nullptr);
 
 [[nodiscard]] void
@@ -49,10 +67,17 @@ DestroyInstance(
 [[nodiscard]] std::expected<std::vector<ExtensionProperties>, Result>
 EnumerateInstanceExtensionProperties();
 
-} // namespace rmm::rtoolbox::vk
+} // namespace rmm::vk
 
-namespace rmm::rtoolbox::vk
+////////////////////////////////////////////////////////////////////////////////
+// Internal declarations
+////////////////////////////////////////////////////////////////////////////////
+
+namespace rmm::vk
 {
+
+[[nodiscard]] Result
+Initialize();
 
 void
 LoadDeviceFunctionPointers(Instance instance) noexcept;
@@ -63,9 +88,13 @@ LoadInstanceFunctionPointers(Instance instance) noexcept;
 void
 LoadLoaderFunctionPointers() noexcept;
 
-} // namespace rmm::rtoolbox::vk
+} // namespace rmm::vk
 
-namespace rmm::rtoolbox::vk
+////////////////////////////////////////////////////////////////////////////////
+// Implementation
+////////////////////////////////////////////////////////////////////////////////
+
+namespace rmm::vk
 {
 
 [[nodiscard]] constexpr std::uint32_t
@@ -89,6 +118,10 @@ MakeVersion(
   return VK_MAKE_VERSION(major, minor, patch);
 }
 
-} // namespace rmm::rtoolbox::vk
+} // namespace rmm::vk
+
+////////////////////////////////////////////////////////////////////////////////
+// Function pointers
+////////////////////////////////////////////////////////////////////////////////
 
 #include "Vulkan.inc"

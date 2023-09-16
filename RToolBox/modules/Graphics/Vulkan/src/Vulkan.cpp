@@ -6,20 +6,41 @@ module;
 
 module rmm.rtoolbox.Vulkan;
 
-namespace rmm::rtoolbox::vk
+namespace rmm::vk
 {
 
 std::expected<Instance, Result>
 CreateInstance(
-  const InstanceCreateInfo* createInfo,
+  Application application,
+  Engine engine,
   const AllocationCallbacks* allocator)
 {
-  if (Instance instance{};
-      VK_SUCCESS == vkCreateInstance(createInfo, allocator, &instance))
+  if (auto result = Initialize(); VK_SUCCESS != result)
   {
-    return instance;
+    return std::unexpected{ result };
   }
-  return std::unexpected{ VK_ERROR_UNKNOWN };
+
+  ApplicationInfo applicationInfo{ .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+                                   .pApplicationName = application.name.c_str(),
+                                   .applicationVersion = application.version,
+                                   .pEngineName = engine.name.c_str(),
+                                   .engineVersion = engine.version,
+                                   .apiVersion = ApiVersion11() };
+
+  InstanceCreateInfo createInfo{ .sType =
+                                   VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+                                 .pApplicationInfo = &applicationInfo };
+  Instance instance{};
+  if (auto result = vkCreateInstance(&createInfo, allocator, &instance);
+      VK_SUCCESS != result)
+  {
+    return std::unexpected{ result };
+  }
+
+  LoadInstanceFunctionPointers(instance);
+  LoadDeviceFunctionPointers(instance);
+
+  return instance;
 }
 
 [[nodiscard]] std::expected<std::vector<ExtensionProperties>, Result>
@@ -39,15 +60,6 @@ EnumerateInstanceExtensionProperties()
 DestroyInstance(Instance instance, const AllocationCallbacks* allocator)
 {
   vkDestroyInstance(instance, allocator);
-}
-
-Result
-Initialize(Instance instance)
-{
-  LoadInstanceFunctionPointers(instance);
-  LoadDeviceFunctionPointers(instance);
-
-  return VK_SUCCESS;
 }
 
 #if !defined(VK_LOAD_FUNCTION_POINTER)
@@ -125,33 +137,6 @@ LoadInstanceFunctionPointers(VkInstance instance) noexcept
 void
 LoadLoaderFunctionPointers() noexcept
 {
-#if 0
-  // Vulkan 1.0
-  vkCreateInstance = reinterpret_cast<PFN_vkCreateInstance>(
-    vkGetInstanceProcAddr(nullptr, "vkCreateInstance"));
-  vkEnumerateInstanceExtensionProperties =
-    reinterpret_cast<PFN_vkEnumerateInstanceExtensionProperties>(
-      vkGetInstanceProcAddr(nullptr, "vkEnumerateInstanceExtensionProperties"));
-  vkEnumerateInstanceLayerProperties =
-    reinterpret_cast<PFN_vkEnumerateInstanceLayerProperties>(
-      vkGetInstanceProcAddr(nullptr, "vkEnumerateInstanceLayerProperties"));
-
-  // Vulkan 1.1
-  vkEnumerateInstanceVersion = reinterpret_cast<PFN_vkEnumerateInstanceVersion>(
-    vkGetInstanceProcAddr(nullptr, "vkEnumerateInstanceVersion"));
-
-  // Vulkan 1.0
-  VK_LOAD_FUNCTION_POINTER(nullptr, vkGetInstanceProcAddr, vkCreateInstance);
-  VK_LOAD_FUNCTION_POINTER(
-    nullptr, vkGetInstanceProcAddr, vkEnumerateInstanceExtensionProperties);
-  VK_LOAD_FUNCTION_POINTER(
-    nullptr, vkGetInstanceProcAddr, vkEnumerateInstanceLayerProperties);
-
-  // Vulkan 1.1
-  VK_LOAD_FUNCTION_POINTER(
-    nullptr, vkGetInstanceProcAddr, vkEnumerateInstanceVersion);
-#endif
-
   // Vulkan 1.0
   VK_LOAD_LOADER_FUNCTION_POINTER(vkCreateInstance);
   VK_LOAD_LOADER_FUNCTION_POINTER(vkEnumerateInstanceExtensionProperties);
@@ -161,4 +146,4 @@ LoadLoaderFunctionPointers() noexcept
   VK_LOAD_LOADER_FUNCTION_POINTER(vkEnumerateInstanceVersion);
 }
 
-} // namespace rmm::rtoolbox::vk
+} // namespace rmm::vk
