@@ -81,6 +81,7 @@ MakeRenderer(
   }
 
   rvk::DestroyInstance(*instanceExp);
+  rvk::vkDestroyInstance(*instanceExp, nullptr);
 }
 
 } // namespace rmm::rtoolbox::renderer

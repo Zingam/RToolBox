@@ -62,6 +62,18 @@ DestroyInstance(Instance instance, const AllocationCallbacks* allocator)
   vkDestroyInstance(instance, allocator);
 }
 
+#if !defined(VK_STRINGIFY)
+#  define VK_STRINGIFY(token) #token
+#else
+#  error 'VK_STRINGIFY' is already defined
+#endif
+
+#if !defined(VK_CONCAT)
+#  define VK_CONCAT(lhs, rhs) VK_STRINGIFY(lhs##rhs)
+#else
+#  error 'VK_CONCAT' is already defined
+#endif
+
 #if !defined(VK_LOAD_FUNCTION_POINTER)
 /**
  * @brief Generates a function pointer loader.
@@ -75,8 +87,11 @@ DestroyInstance(Instance instance, const AllocationCallbacks* allocator)
 #  define VK_LOAD_FUNCTION_POINTER(instance, loaderName, functionName)         \
     functionName = reinterpret_cast<PFN_##functionName>(                       \
       loaderName(instance, #functionName))
+// #  define VK_LOAD_FUNCTION_POINTER(instance, loaderName, functionName)         \
+//     functionName = reinterpret_cast<PFN_vk##functionName>(                     \
+//       loaderName(instance, VK_CONCAT(vk, functionName)))
 #else
-#  error VK_LOAD_FUNCTION_POINTER already defined!
+#  error 'VK_LOAD_FUNCTION_POINTER' already defined!
 #endif
 
 #if !defined(VK_LOAD_INSTANCE_FUNCTION_POINTER)
@@ -92,7 +107,7 @@ DestroyInstance(Instance instance, const AllocationCallbacks* allocator)
 #  define VK_LOAD_INSTANCE_FUNCTION_POINTER(functionName)                      \
     VK_LOAD_FUNCTION_POINTER(instance, vkGetInstanceProcAddr, functionName)
 #else
-#  error VK_LOAD_INSTANCE_FUNCTION_POINTER is already defined!
+#  error 'VK_LOAD_INSTANCE_FUNCTION_POINTER' is already defined!
 #endif
 
 #if !defined(VK_LOAD_DEVICE_FUNCTION_POINTER)
@@ -108,14 +123,14 @@ DestroyInstance(Instance instance, const AllocationCallbacks* allocator)
 #  define VK_LOAD_DEVICE_FUNCTION_POINTER(functionName)                        \
     VK_LOAD_FUNCTION_POINTER(instance, vkGetDeviceProcAddr, functionName)
 #else
-#  error VK_LOAD_DEVICE_FUNCTION_POINTER is already defined!
+#  error 'VK_LOAD_DEVICE_FUNCTION_POINTER' is already defined!
 #endif
 
 #if !defined(VK_LOAD_LOADER_FUNCTION_POINTER)
 #  define VK_LOAD_LOADER_FUNCTION_POINTER(functionName)                        \
     VK_LOAD_FUNCTION_POINTER(nullptr, vkGetInstanceProcAddr, functionName)
 #else
-#  error VK_LOAD_LOADER_FUNCTION_POINTER is already defined!
+#  error 'VK_LOAD_LOADER_FUNCTION_POINTER' is already defined!
 #endif
 
 void

@@ -15,6 +15,8 @@ export module rmm.rtoolbox.Vulkan;
 export namespace rmm::vk
 {
 
+// Application types
+
 struct Application
 {
   const std::string name;
@@ -66,6 +68,8 @@ DestroyInstance(
 
 [[nodiscard]] std::expected<std::vector<ExtensionProperties>, Result>
 EnumerateInstanceExtensionProperties();
+
+PFN_vkDestroyInstance vkDestroyInstance;
 
 } // namespace rmm::vk
 
