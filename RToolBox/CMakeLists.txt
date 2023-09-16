@@ -19,12 +19,9 @@ target_compile_features("${PROJECT_NAME}"
 target_compile_options("${PROJECT_NAME}"
   PUBLIC
 )
-find_package(Vulkan REQUIRED COMPONENTS dxc volk)
 target_link_libraries("${PROJECT_NAME}"
   PUBLIC
     "rmm::rtoolbox::base"
-    "vulkan::cppm"
-    "Vulkan::volk"
 )
 target_link_options("${PROJECT_NAME}"
   PUBLIC
@@ -52,4 +49,3 @@ target_sources("${PROJECT_NAME}"
 
 add_subdirectory("examples")
 add_subdirectory("libraries")
-add_subdirectory("modules/Graphics")
