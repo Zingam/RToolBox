@@ -22,6 +22,7 @@ target_compile_options("${PROJECT_NAME}"
 target_link_libraries("${PROJECT_NAME}"
   PUBLIC
     "rmm::rtoolbox::base"
+    "rmm::vulkan"
 )
 target_link_options("${PROJECT_NAME}"
   PUBLIC
@@ -49,3 +50,4 @@ target_sources("${PROJECT_NAME}"
 
 add_subdirectory("examples")
 add_subdirectory("libraries")
+add_subdirectory("modules/Graphics")
