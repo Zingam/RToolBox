@@ -26,6 +26,7 @@ int
 main(int argc, char** argv)
 #endif
 {
+  ::rmm::rtoolbox::renderer::MakeRenderer({"application", 1});
   std::tuple<HINSTANCE, WORD> startupParams{hInstance, nCmdShow};
   rt::Window window{ rt::Window::Description{ "SimpleGame", 0, 0, 100, 100 }, reinterpret_cast<void*>(&startupParams)};
   const auto* hwnd = window.GetHandle();
