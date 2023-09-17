@@ -8,10 +8,10 @@ module;
 
 module rmm.rtoolbox.Vulkan;
 
-namespace rmm::vk
+namespace rmm::vkw
 {
 
-VkResult
+vk::Result
 Initialize()
 {
   HMODULE module = LoadLibrary(L"vulkan-1.dll");
@@ -20,7 +20,7 @@ Initialize()
     return VK_ERROR_INITIALIZATION_FAILED;
   }
 
-  vkGetInstanceProcAddr = reinterpret_cast<PFN_vkGetInstanceProcAddr>(
+  vk::GetInstanceProcAddr = reinterpret_cast<PFN_vkGetInstanceProcAddr>(
     GetProcAddress(module, "vkGetInstanceProcAddr"));
 
   LoadLoaderFunctionPointers();
@@ -28,4 +28,4 @@ Initialize()
   return VK_SUCCESS;
 }
 
-} // namespace rmm::vk
+} // namespace rmm::vkw

@@ -4,6 +4,7 @@ module;
 
 #include <expected>
 #include <string>
+#include <string_view>
 #include <vector>
 
 export module rmm.rtoolbox.Vulkan;
@@ -13,6 +14,33 @@ export module rmm.rtoolbox.Vulkan;
 ////////////////////////////////////////////////////////////////////////////////
 
 export namespace rmm::vk
+{
+
+// Types
+
+#include "VulkanTypes.inc"
+
+// Helper functions
+
+[[nodiscard]] constexpr std::uint32_t
+ApiVersion10() noexcept;
+
+[[nodiscard]] constexpr std::uint32_t
+ApiVersion11() noexcept;
+
+[[nodiscard]] constexpr std::uint32_t
+MakeVersion(
+  std::uint32_t major,
+  std::uint32_t minor,
+  std::uint32_t patch) noexcept;
+
+// Function pointers
+
+#include "VulkanFunctions.inc"
+
+} // namespace rmm::vk
+
+export namespace rmm::vkw
 {
 
 // Application types
@@ -29,70 +57,42 @@ struct Engine
   const std::uint32_t version;
 };
 
-// Vulkan types
+// Vulkan wrapper functions
 
-using Result = VkResult;
-using Instance = VkInstance;
-
-using AllocationCallbacks = VkAllocationCallbacks;
-using ApplicationInfo = VkApplicationInfo;
-using ExtensionProperties = VkExtensionProperties;
-using InstanceCreateInfo = VkInstanceCreateInfo;
-
-// Vulkan helper functions
-
-[[nodiscard]] constexpr std::uint32_t
-ApiVersion10() noexcept;
-
-[[nodiscard]] constexpr std::uint32_t
-ApiVersion11() noexcept;
-
-[[nodiscard]] constexpr std::uint32_t
-MakeVersion(
-  std::uint32_t major,
-  std::uint32_t minor,
-  std::uint32_t patch) noexcept;
-
-// Vulkan functions
-
-[[nodiscard]] std::expected<Instance, Result>
+[[nodiscard]] std::expected<vk::Instance, vk::Result>
 CreateInstance(
   Application application,
   Engine engine,
-  const AllocationCallbacks* allocator = nullptr);
+  const vk::AllocationCallbacks* allocator = nullptr);
 
-[[nodiscard]] void
-DestroyInstance(
-  Instance createInfo,
-  const AllocationCallbacks* allocator = nullptr);
+[[nodiscard]] std::expected<std::vector<vk::ExtensionProperties>, vk::Result>
+EnumerateInstanceExtensionProperties(std::string_view layerName = {});
 
-[[nodiscard]] std::expected<std::vector<ExtensionProperties>, Result>
-EnumerateInstanceExtensionProperties();
+[[nodiscard]] std::expected<std::vector<vk::LayerProperties>, vk::Result>
+EnumerateInstanceLayerProperties();
 
-PFN_vkDestroyInstance vkDestroyInstance;
-
-} // namespace rmm::vk
+} // namespace rmm::vkw
 
 ////////////////////////////////////////////////////////////////////////////////
 // Internal declarations
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace rmm::vk
+namespace rmm::vkw
 {
 
-[[nodiscard]] Result
+vk::Result
 Initialize();
 
-void
-LoadDeviceFunctionPointers(Instance instance) noexcept;
+vk::Result
+LoadDeviceFunctionPointers(vk::Instance instance) noexcept;
 
-void
-LoadInstanceFunctionPointers(Instance instance) noexcept;
+vk::Result
+LoadInstanceFunctionPointers(vk::Instance instance) noexcept;
 
-void
+vk::Result
 LoadLoaderFunctionPointers() noexcept;
 
-} // namespace rmm::vk
+} // namespace rmm::vkw
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implementation
@@ -123,9 +123,3 @@ MakeVersion(
 }
 
 } // namespace rmm::vk
-
-////////////////////////////////////////////////////////////////////////////////
-// Function pointers
-////////////////////////////////////////////////////////////////////////////////
-
-#include "Vulkan.inc"

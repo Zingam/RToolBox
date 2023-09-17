@@ -35,6 +35,7 @@ namespace
 {
 
 namespace rvk = ::rmm::vk;
+namespace rvkw = ::rmm::vkw;
 
 } // namespace
 
@@ -62,26 +63,29 @@ MakeRenderer(
   Application&& application,
   Engine&& engine = { std::string{ "RToolBox" }, 1 })
 {
-  auto instanceExp = rvk::CreateInstance(
-    { application.name,
-      rvk::MakeVersion(
-        application.version.major,
-        application.version.minor,
-        application.version.patch) },
-    { engine.name,
-      rvk::MakeVersion(
-        engine.version.major, engine.version.minor, engine.version.patch) });
-  if (instanceExp.has_value())
+  const auto MakeVersion = [](const Version& version)
+  { return rvk::MakeVersion(version.major, version.minor, version.patch); };
+
+  auto instanceExp = rvkw::CreateInstance(
+    { application.name, MakeVersion(application.version) },
+    { engine.name, MakeVersion(engine.version) });
+  if (!instanceExp.has_value())
   {
-    // std::print("has instance {}", *instanceExp);
-  }
-  else
-  {
-    // std::print("has instance {}", instanceExp.error());
+    return;
   }
 
-  rvk::DestroyInstance(*instanceExp);
-  rvk::vkDestroyInstance(*instanceExp, nullptr);
+  const auto extensionsExp = rvkw::EnumerateInstanceExtensionProperties();
+  if (!extensionsExp.has_value())
+  {
+    return;
+  }
+
+  for (const auto& extension : *extensionsExp)
+  {
+    std::print("Extension: {}", extension.extensionName);
+  }
+
+  rvk::DestroyInstance(*instanceExp, nullptr);
 }
 
 } // namespace rmm::rtoolbox::renderer
