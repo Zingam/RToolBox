@@ -5,6 +5,7 @@ add_library("rmm::vulkan" ALIAS "Vulkan")
 target_compile_definitions("Vulkan"
   PRIVATE
     "VK_NO_PROTOTYPES"
+    $<$<PLATFORM_ID:Windows>:VK_USE_PLATFORM_WIN32_KHR>
 )
 find_package("Vulkan")
 target_link_libraries("Vulkan"

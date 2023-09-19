@@ -3,6 +3,7 @@ module;
 #include <vulkan/vulkan.h>
 
 #include <expected>
+#include <functional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -64,6 +65,59 @@ CreateInstance(
   Application application,
   Engine engine,
   const vk::AllocationCallbacks* allocator = nullptr);
+
+class DebugUtils
+{
+public:
+  VkBool32 (*debugCallbackFunctionPointer)(
+    VkDebugUtilsMessageSeverityFlagBitsEXT,
+    VkDebugUtilsMessageTypeFlagsEXT,
+    const VkDebugUtilsMessengerCallbackDataEXT*,
+    void*);
+  VkBool32(debugCallbackFunctionType)(
+    VkDebugUtilsMessageSeverityFlagBitsEXT,
+    VkDebugUtilsMessageTypeFlagsEXT,
+    const VkDebugUtilsMessengerCallbackDataEXT*,
+    void*);
+  using CallbackFunctionPointer = VkBool32 (*)(
+    VkDebugUtilsMessageSeverityFlagBitsEXT,
+    VkDebugUtilsMessageTypeFlagsEXT,
+    const VkDebugUtilsMessengerCallbackDataEXT*,
+    void*);
+  using CallbackFunctionType = VkBool32(
+    VkDebugUtilsMessageSeverityFlagBitsEXT,
+    VkDebugUtilsMessageTypeFlagsEXT,
+    const VkDebugUtilsMessengerCallbackDataEXT*,
+    void*);
+  using DebugCallback = VkBool32(
+    VkDebugUtilsMessageSeverityFlagBitsEXT,
+    VkDebugUtilsMessageTypeFlagsEXT,
+    const VkDebugUtilsMessengerCallbackDataEXT*,
+    void*);
+
+public:
+  DebugUtils(vk::Instance instance);
+
+  ~DebugUtils();
+
+public:
+  vk::Result CreateMessanger();
+
+  vk::Result DestroyMessanger();
+
+  void SetCallback(std::function<DebugCallback>);
+
+private:
+  const vk::Instance instance;
+  std::function<VkBool32()> debugCallback1;
+  std::function<VkBool32(
+    VkDebugUtilsMessageSeverityFlagBitsEXT,
+    VkDebugUtilsMessageTypeFlagsEXT,
+    const VkDebugUtilsMessengerCallbackDataEXT*,
+    void*)>
+    debugCallback2;
+  std::function<DebugCallback> debugCallback;
+};
 
 [[nodiscard]] std::expected<std::vector<vk::ExtensionProperties>, vk::Result>
 EnumerateInstanceExtensionProperties(std::string_view layerName = {});

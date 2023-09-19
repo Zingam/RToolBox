@@ -1,12 +1,16 @@
 #pragma once
 
+#if __INTELLISENSE__
+#  include <vulkan/vulkan.h>
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 // Macros
 ////////////////////////////////////////////////////////////////////////////////
 
 #if !defined(VK_FUNCTION_POINTER)
 /**
- * @brief Generates a vulkan function pointer.
+ * @brief Defines Vulkan function pointer.
  *
  */
 #  define VK_FUNCTION_POINTER(functionName) PFN_vk##functionName functionName
