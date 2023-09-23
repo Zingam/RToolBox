@@ -2,17 +2,60 @@ module;
 
 #include <vulkan/vulkan.h>
 
+#include <cassert>
 #include <expected>
 #include <string_view>
-#include <cassert>
 
 module rmm.rtoolbox.Vulkan;
 
 namespace rmm::vkw
 {
 
+// Constructors & Destructors
+
+Instance::Instance(
+  Application&& application,
+  Engine&& engine,
+  const vk::AllocationCallbacks* allocator)
+  : allocator{ allocator }
+{
+  const auto instanceExp =
+    Create(std::move(application), std::move(engine), allocator);
+  if (!instanceExp.has_value())
+  {
+    return;
+  }
+
+  instance = instanceExp.value();
+}
+
+Instance::~Instance()
+{
+  if (nullptr != instance)
+  {
+    vk::DestroyInstance(instance, allocator);
+    instance = nullptr;
+  }
+}
+
+// Methods
+
+vk::Instance
+Instance::operator*() noexcept
+{
+  return instance;
+}
+
+vk::Instance
+Instance::Get() noexcept
+{
+  return instance;
+}
+
+// Static methods
+
 std::expected<vk::Instance, vk::Result>
-CreateInstance(
+Instance::Create(
   Application application,
   Engine engine,
   const vk::AllocationCallbacks* allocator)
@@ -64,7 +107,7 @@ CreateInstance(
 }
 
 std::expected<std::vector<vk::ExtensionProperties>, vk::Result>
-EnumerateInstanceExtensionProperties(std::string_view layerName)
+Instance::EnumerateInstanceExtensionProperties(std::string_view layerName)
 {
   assert(layerName.data() == nullptr);
   std::uint32_t extensionCount = 0;
@@ -87,7 +130,7 @@ EnumerateInstanceExtensionProperties(std::string_view layerName)
 }
 
 std::expected<std::vector<vk::LayerProperties>, vk::Result>
-EnumerateInstanceLayerProperties()
+Instance::EnumerateInstanceLayerProperties()
 {
   std::uint32_t layerCount = 0;
   if (const auto result =

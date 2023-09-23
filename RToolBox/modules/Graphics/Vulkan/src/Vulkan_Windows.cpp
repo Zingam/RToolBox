@@ -5,6 +5,7 @@ module;
 #include <vulkan/vulkan.h>
 
 #include <expected>
+#include <vector>
 
 module rmm.rtoolbox.Vulkan;
 
@@ -26,6 +27,17 @@ Initialize()
   LoadLoaderFunctionPointers();
 
   return VK_SUCCESS;
+}
+
+std::vector<const char*>
+GetRequiredInstanceExtensions()
+{
+  std::vector extensions{
+    VK_KHR_SURFACE_EXTENSION_NAME,
+    VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+  };
+
+  return extensions;
 }
 
 } // namespace rmm::vkw

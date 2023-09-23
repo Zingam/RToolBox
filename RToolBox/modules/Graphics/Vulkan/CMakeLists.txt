@@ -27,6 +27,7 @@ target_sources("Vulkan"
   PRIVATE
     $<$<PLATFORM_ID:Windows>:src/Vulkan_Windows.cpp>
     "src/Vulkan.cpp"
+    "src/VulkanExtensions.inc"
     "src/VulkanFunctions.inc"
     "src/VulkanTypes.inc"
 )

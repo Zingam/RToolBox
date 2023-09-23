@@ -2,6 +2,7 @@ module;
 
 #include <vulkan/vulkan.h>
 
+#include <cstdint>
 #include <expected>
 #include <functional>
 #include <string>
@@ -14,12 +15,24 @@ export module rmm.rtoolbox.Vulkan;
 // Public interface
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief Vulkan native functions and types.
+ *
+ */
 export namespace rmm::vk
 {
 
 // Types
 
-#include "VulkanTypes.inc"
+#include "VulkanTypes.inc" /
+
+// Function pointers
+
+#include "VulkanFunctions.inc"
+
+// Extensions
+
+#include "VulkanExtensions.inc"
 
 // Helper functions
 
@@ -35,12 +48,12 @@ MakeVersion(
   std::uint32_t minor,
   std::uint32_t patch) noexcept;
 
-// Function pointers
-
-#include "VulkanFunctions.inc"
-
 } // namespace rmm::vk
 
+/**
+ * @brief Vulkan wrapper and helper types.
+ *
+ */
 export namespace rmm::vkw
 {
 
@@ -60,39 +73,57 @@ struct Engine
 
 // Vulkan wrapper functions
 
-[[nodiscard]] std::expected<vk::Instance, vk::Result>
-CreateInstance(
-  Application application,
-  Engine engine,
-  const vk::AllocationCallbacks* allocator = nullptr);
+class Instance
+{
+public:
+  explicit Instance(
+    Application&& application,
+    Engine&& engine,
+    const vk::AllocationCallbacks* allocator = nullptr);
+
+  Instance(const Instance&) = delete;
+
+  Instance& operator=(const Instance&) = delete;
+
+  Instance(Instance&&) = default;
+
+  Instance& operator=(Instance&&) = default;
+
+  ~Instance();
+
+public:
+  [[nodiscard]] vk::Instance operator*() noexcept;
+
+  [[nodiscard]] vk::Instance Get() noexcept;
+
+public:
+  [[nodiscard]] static std::expected<vk::Instance, vk::Result> Create(
+    Application application,
+    Engine engine,
+    const vk::AllocationCallbacks* allocator = nullptr);
+
+  [[nodiscard]] static std::
+    expected<std::vector<vk::ExtensionProperties>, vk::Result>
+    EnumerateInstanceExtensionProperties(std::string_view layerName = {});
+
+  [[nodiscard]] static std::
+    expected<std::vector<vk::LayerProperties>, vk::Result>
+    EnumerateInstanceLayerProperties();
+
+  [[nodiscard]] static std::vector<const char*> GetRequiredInstanceExtensions();
+
+private:
+  const vk::AllocationCallbacks* allocator;
+  vk::Instance instance = nullptr;
+};
 
 class DebugUtils
 {
 public:
-  VkBool32 (*debugCallbackFunctionPointer)(
-    VkDebugUtilsMessageSeverityFlagBitsEXT,
-    VkDebugUtilsMessageTypeFlagsEXT,
-    const VkDebugUtilsMessengerCallbackDataEXT*,
-    void*);
-  VkBool32(debugCallbackFunctionType)(
-    VkDebugUtilsMessageSeverityFlagBitsEXT,
-    VkDebugUtilsMessageTypeFlagsEXT,
-    const VkDebugUtilsMessengerCallbackDataEXT*,
-    void*);
-  using CallbackFunctionPointer = VkBool32 (*)(
-    VkDebugUtilsMessageSeverityFlagBitsEXT,
-    VkDebugUtilsMessageTypeFlagsEXT,
-    const VkDebugUtilsMessengerCallbackDataEXT*,
-    void*);
-  using CallbackFunctionType = VkBool32(
-    VkDebugUtilsMessageSeverityFlagBitsEXT,
-    VkDebugUtilsMessageTypeFlagsEXT,
-    const VkDebugUtilsMessengerCallbackDataEXT*,
-    void*);
-  using DebugCallback = VkBool32(
-    VkDebugUtilsMessageSeverityFlagBitsEXT,
-    VkDebugUtilsMessageTypeFlagsEXT,
-    const VkDebugUtilsMessengerCallbackDataEXT*,
+  using DebugCallback = vk::Bool32(
+    vk::DebugUtilsMessageSeverityFlagBits,
+    vk::DebugUtilsMessageTypeFlags,
+    const vk::DebugUtilsMessengerCallbackData*,
     void*);
 
 public:
@@ -109,42 +140,9 @@ public:
 
 private:
   const vk::Instance instance;
-  std::function<VkBool32()> debugCallback1;
-  std::function<VkBool32(
-    VkDebugUtilsMessageSeverityFlagBitsEXT,
-    VkDebugUtilsMessageTypeFlagsEXT,
-    const VkDebugUtilsMessengerCallbackDataEXT*,
-    void*)>
-    debugCallback2;
+
   std::function<DebugCallback> debugCallback;
 };
-
-[[nodiscard]] std::expected<std::vector<vk::ExtensionProperties>, vk::Result>
-EnumerateInstanceExtensionProperties(std::string_view layerName = {});
-
-[[nodiscard]] std::expected<std::vector<vk::LayerProperties>, vk::Result>
-EnumerateInstanceLayerProperties();
-
-} // namespace rmm::vkw
-
-////////////////////////////////////////////////////////////////////////////////
-// Internal declarations
-////////////////////////////////////////////////////////////////////////////////
-
-namespace rmm::vkw
-{
-
-vk::Result
-Initialize();
-
-vk::Result
-LoadDeviceFunctionPointers(vk::Instance instance) noexcept;
-
-vk::Result
-LoadInstanceFunctionPointers(vk::Instance instance) noexcept;
-
-vk::Result
-LoadLoaderFunctionPointers() noexcept;
 
 } // namespace rmm::vkw
 
@@ -177,3 +175,30 @@ MakeVersion(
 }
 
 } // namespace rmm::vk
+
+////////////////////////////////////////////////////////////////////////////////
+// Private section
+////////////////////////////////////////////////////////////////////////////////
+
+module :private;
+
+////////////////////////////////////////////////////////////////////////////////
+// Internal declarations
+////////////////////////////////////////////////////////////////////////////////
+
+namespace rmm::vkw
+{
+
+vk::Result
+Initialize();
+
+vk::Result
+LoadDeviceFunctionPointers(vk::Instance instance) noexcept;
+
+vk::Result
+LoadInstanceFunctionPointers(vk::Instance instance) noexcept;
+
+vk::Result
+LoadLoaderFunctionPointers() noexcept;
+
+} // namespace rmm::vkw

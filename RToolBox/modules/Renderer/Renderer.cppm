@@ -66,15 +66,16 @@ MakeRenderer(
   const auto MakeVersion = [](const Version& version)
   { return rvk::MakeVersion(version.major, version.minor, version.patch); };
 
-  auto instanceExp = rvkw::CreateInstance(
-    { application.name, MakeVersion(application.version) },
-    { engine.name, MakeVersion(engine.version) });
-  if (!instanceExp.has_value())
+  rvkw::Instance instance{ { application.name,
+                             MakeVersion(application.version) },
+                           { engine.name, MakeVersion(engine.version) } };
+  if (nullptr == *instance)
   {
     return;
   }
 
-  const auto extensionsExp = rvkw::EnumerateInstanceExtensionProperties();
+  const auto extensionsExp =
+    rvkw::Instance::EnumerateInstanceExtensionProperties();
   if (!extensionsExp.has_value())
   {
     return;
@@ -84,8 +85,6 @@ MakeRenderer(
   {
     std::print("Extension: {}", extension.extensionName);
   }
-
-  rvk::DestroyInstance(*instanceExp, nullptr);
 }
 
 } // namespace rmm::rtoolbox::renderer
