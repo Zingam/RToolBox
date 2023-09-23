@@ -1,4 +1,5 @@
-namespace rmm::rtoolbox {
+namespace rmm::rtoolbox
+{
 
 Window::Window(Window::Description&& description, void* data)
   : oPtr{ std::make_unique<Implementation>(std::move(description), data) }

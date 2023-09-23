@@ -9,12 +9,13 @@ module;
 
 module rmm.RToolBox;
 
-namespace rmm::rtoolbox {
+namespace rmm::rtoolbox
+{
 
 class Window::Implementation
 {
 public:
-  Implementation(Window::Description&& description, void* data);
+  explicit Implementation(Window::Description&& description, void* data);
 
   ~Implementation();
 
@@ -52,7 +53,8 @@ Window::Implementation::Implementation(
   hInstance = std::get<0>(*startupParams);
   nCmdShow = std::get<1>(*startupParams);
 
-  if (NULL == Initialize()) {
+  if (NULL == Initialize())
+  {
     ::MessageBox(
       NULL,
       L"Window Registration Failed!",
@@ -63,7 +65,8 @@ Window::Implementation::Implementation(
 
 Window::Implementation::~Implementation()
 {
-  if (NULL != hwnd) {
+  if (NULL != hwnd)
+  {
     ::DestroyWindow(hwnd);
   }
 }
@@ -86,12 +89,17 @@ Window::Implementation::Run() const
 {
   MSG msg;
   auto isRunning{ true };
-  while (isRunning) {
-    while (::PeekMessage(&msg, HWND(), 0, 0, PM_REMOVE)) {
-      if (msg.message == WM_QUIT) {
+  while (isRunning)
+  {
+    while (::PeekMessage(&msg, HWND(), 0, 0, PM_REMOVE))
+    {
+      if (msg.message == WM_QUIT)
+      {
         isRunning = false;
         continue;
-      } else {
+      }
+      else
+      {
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
       }
@@ -118,13 +126,15 @@ Window::Implementation::SetIcon(Window::ResourceID icon) const noexcept
 HWND
 Window::Implementation::Initialize() noexcept
 {
-  if (nullptr != hwnd) {
+  if (nullptr != hwnd)
+  {
     return hwnd;
   }
 
   // Register the window class.
 
-  const auto utf8_to_wstring = [](const std::string& str) {
+  const auto utf8_to_wstring = [](const std::string& str)
+  {
     std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
     return myconv.from_bytes(str);
   };
@@ -173,7 +183,8 @@ Window::Implementation::WindowProcedure(
   LPARAM lParam)
 {
   // Process messages
-  switch (msg) {
+  switch (msg)
+  {
     case WM_CLOSE:
       ::DestroyWindow(hwnd);
       break;
@@ -183,7 +194,8 @@ Window::Implementation::WindowProcedure(
       ::PostQuitMessage(0);
       break;
     case WM_KEYDOWN:
-      if (wParam == VK_ESCAPE) {
+      if (wParam == VK_ESCAPE)
+      {
         ::DestroyWindow(hwnd);
         break;
       }

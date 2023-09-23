@@ -9,7 +9,8 @@ export module rmm.RToolBox:System.Window;
 // Interface
 ////////////////////////////////////////////////////////////////////////////////
 
-export namespace rmm::rtoolbox {
+export namespace rmm::rtoolbox
+{
 
 class Window
 {
